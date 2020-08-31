@@ -1,25 +1,29 @@
 <?php
-
+	
 	$inData = getRequestInfo();
+	
+	$user = $inData["login"];
+	$password = $inData["Password"];
+
 	
 	$id = 0;
 	$firstName = "";
 	$lastName = "";
 
-	$conn = new mysqli("localhost", "ricklein_leinecker", "WeLoveCOP4331", "ricklein_COP4331");
+	$conn = new mysqli("localhost", "group13_DB_manage", "Z}^p.B@4d2E&", "group13_ContactManager_DB");
 	if ($conn->connect_error) 
 	{
 		returnWithError( $conn->connect_error );
 	} 
 	else
 	{
-		$sql = "SELECT ID,firstName,lastName FROM Users where Login='" . $inData["login"] . "' and Password='" . $inData["password"] . "'";
+		$sql = "SELECT ID,FirstName,LastName FROM `Users` WHERE `UserName` = '" . $user . "' AND `Password` = '" . $password . "'";
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0)
 		{
 			$row = $result->fetch_assoc();
-			$firstName = $row["firstName"];
-			$lastName = $row["lastName"];
+			$firstName = $row["FirstName"];
+			$lastName = $row["LastName"];
 			$id = $row["ID"];
 			
 			returnWithInfo($firstName, $lastName, $id );
@@ -39,7 +43,7 @@
 	function sendResultInfoAsJson( $obj )
 	{
 		header('Content-type: application/json');
-		echo $obj;
+		echo $obj . "\n";
 	}
 	
 	function returnWithError( $err )
