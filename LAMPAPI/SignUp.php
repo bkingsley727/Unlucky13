@@ -34,8 +34,6 @@
    		{
    			returnWithError( $conn->error );
    		}
-
-         //FIXME: add success message
 		}
 		$conn->close();
 	}
@@ -57,9 +55,4 @@
       sendResultInfoAsJson( $retValue );
    }
 
-   function returnWithInfo( $firstName, $lastName, $id )
-   {
-      $retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
-      sendResultInfoAsJson( $retValue );
-   }
  ?>
