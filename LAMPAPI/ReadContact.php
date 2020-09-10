@@ -53,8 +53,13 @@
 
    function returnWithInfo( $firstName, $lastName, $id, $email, $phone, $dateCreated)
 	{
-		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '",
-         "email":"' . $email .'","phone":"' . $phone . '","dateCreated":"' . $dateCreated . '","error":""}';
+      $retValue = '{"id":' . $id . ',
+                    "firstName":"' . $firstName . '",
+                    "lastName":"' . $lastName . '",
+                    "email":"' . $email .'",
+                    "phone":"' . $phone . '",
+                    "dateCreated":"' . $dateCreated . '",
+                    "error":""}';
 		sendResultInfoAsJson( $retValue );
 	}
  ?>
