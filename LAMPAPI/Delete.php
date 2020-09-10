@@ -1,10 +1,12 @@
 <?php
    $inData = getRequestInfo();
 
-   //load all the data into variables
+   $contactIDs = array();
    $userID = $inData["userID"];
-   $contactID = $inData["contactID"];
 
+   for( $i = 0; $i < count($inData["contactID"]); $i++ ){
+      $contactIDs[] = $inData["contactID"][$i];
+   }
 	$conn = new mysqli("localhost", "group13_DB_manage", "Z}^p.B@4d2E&", "group13_ContactManager_DB");
     //check server connection
     if ($conn->connect_error)
@@ -13,28 +15,41 @@
 	}
 	else
 	{
-      $sql =  "SELECT FirstName, LastName FROM `Contacts` WHERE ( ID LIKE '%" . $contactID . "%') AND UserID LIKE '%" . $userID . "%'";
-      $result = $conn->query($sql);
-      // database has username
-		if ($result->num_rows == 0)
-		{
-			returnWithError( "No Records Found" );
-		}
-      else
-      {
-      $firstName = $row["FirstName"];
-      $lastName = $row["LastName"];
-      }
-      $sql =  "DELETE FROM `Contacts` WHERE ( ID LIKE '%" . $contactID . "%') AND UserID LIKE '%" . $userID . "%'";
-      if( $result = $conn->query($sql) != TRUE )
-      {
-         returnWithError( $conn->error );
-      }
-      else
-      {
-         returnWithSuccess( $firstName, $lastName, "Success");
-      }
+      for( $i = 0; $i < count($inData["contactID"]); $i++ ){
+         $contactID = $contactIDs[$i];
 
+         $sql =  "SELECT FirstName, LastName FROM `Contacts` WHERE ( ID LIKE '%" . $contactID . "%') AND UserID LIKE '%" . $userID . "%'";
+         $result = $conn->query($sql);
+         // database has username
+		    if ($result->num_rows === 0)
+		    {
+                $retValue = '{"message":" Record Not found for chosen contact","contactID":"' . $contactID . '"}';
+     			        $searchResults .= $retValue;
+               continue;
+		    }
+            else
+            {
+                $row = $result->fetch_assoc();
+                $firstName = $row["FirstName"];
+                $lastName = $row["LastName"];
+            }
+            
+            $sql =  "DELETE FROM `Contacts` WHERE ( ID LIKE '%" . $contactID . "%') AND UserID LIKE '%" . $userID . "%'";
+            if( $result = $conn->query($sql) != TRUE )
+            {
+               $retValue = '{"message":"Deletion Unsuccessful for Chosen Contact","contactID":"' . $contactID . '"}';
+                   $searchResults .= $retValue;
+              continue;
+            }
+            else
+            {
+               $retValue = '{"message":"Deletion Successful for Chosen Contact","contactID":"' . $contactID . '",
+                              "firstName":"' . $firstName . '", "lastName":"' . $lastName . '"  }';
+                   $searchResults .= $retValue;
+              continue;
+            }
+         }
+      returnWithInfo( $searchResults );
        $conn->close();
 	}
 
@@ -49,16 +64,10 @@
 		echo $obj . "\n";
 	}
 
-	function returnWithError( $err )
-	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
-		sendResultInfoAsJson( $retValue );
-	}
-
-	function returnWithSuccess( $firstName, $lastName, $msg)
-	{
-        $retValue = '{"Deleted":' . $msg . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '", "error":""}';
-		sendResultInfoAsJson( $retValue );
-	}
+   function returnWithInfo( $searchResults )
+   {
+      $returnArray = '{"results":[' . $searchResults . '],"error":""}';
+      sendResultInfoAsJson( $returnArray );
+   }
 
  ?>
