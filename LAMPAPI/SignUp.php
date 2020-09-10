@@ -34,6 +34,11 @@
    		{
    			returnWithError( $conn->error );
    		}
+         else
+         {
+            returnWithInfo( $firstName, $lastName, "User created successfully");
+         }
+
 		}
 		$conn->close();
 	}
@@ -54,5 +59,10 @@
       $retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
       sendResultInfoAsJson( $retValue );
    }
+   function returnWithInfo( $firstName, $lastName, $mssg)
+	{
+		$retValue = '{"firstName":"' . $firstName . '","lastName":"' . $lastName . '","message":"' . $mssg . '"}';
+		sendResultInfoAsJson( $retValue );
+	}
 
  ?>
