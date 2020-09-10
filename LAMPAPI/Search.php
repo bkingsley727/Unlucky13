@@ -2,7 +2,7 @@
 
 	$inData = getRequestInfo();
 
-	$contacts = array(array());
+	$contact = array(array());
 	$searchCount = 0;
 
    // Create connection
@@ -17,24 +17,27 @@
                OR LastName LIKE '%" . $inData["search"] . "%' OR Email LIKE '%" . $inData["search"] . "%'
                OR Phone LIKE '%" . $inData["search"] . "%' ) AND UserID LIKE '%" . $inData["userID"] . "%'";
 
-
 		$result = $conn->query($sql);
-		if ($result->num_rows > 0)
-		{
-			while($row = $result->fetch_assoc())
-			{
-				if( $searchCount > 0 )
-				{
-					$searchResults .= ",";
-				}
-				$searchCount++;
-				$searchResults .= '"' . $row["FirstName"] . '"';
-				$searchResults .= '"' . $row["LastName"] . '"';
-			}
-		}
-		else
+		$searchCount = $result->num_rows;
+
+      if ($searchCount == 0)
 		{
 			returnWithError( "No Records Found" );
+		}
+
+		while ($searchCount > 0)
+		{
+			$row = $result->fetch_assoc();
+		    $contact = '{"firstName":"' . $row["FirstName"] . '","lastName":"' . $row["LastName"] . '"}';
+
+			$searchResults .= $contact;
+
+			if($searchCount != 1)
+			{
+				$searchResults .= ",";
+			}
+
+			$searchCount--;
 		}
 		$conn->close();
    }
