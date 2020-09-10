@@ -18,29 +18,37 @@
 	} 
 	else
 	{
-		$sql = "SELECT ID,FirstName,LastName FROM `Contacts` WHERE `UserID` = " . $userID;
+        //get ID, and names of all contacts belonging to this user ID
+        $sql = "SELECT ID,FirstName,LastName FROM `Contacts` WHERE `UserID` = " . $userID;
         $result = $conn->query($sql);
+        
         $contactCount = $result->num_rows;
 		//if user exists
 		if ($contactCount == 0){
+            //no user, not sure how this is possible
             returnWithError("No records found");
-        }
-
-        while ($contactCount > 0){
-            $row = $result->fetch_assoc();
-            $currentContact = '{"ID": ' . $row["ID"] . '"firstName": "' . $row["FirstName"] . '","lastName": "' . $row["LastName"] . '"}';
-            
-            $allContacts .= $currentContact;
-
-            if ($contactCount != 1){
-                $allContacts .= ",";
+        }else{
+            //yes user
+            while ($contactCount > 0){
+                //get next row and format it into json
+                $row = $result->fetch_assoc();
+                $currentContact = '{"ID": ' . $row["ID"] . '"firstName": "' . $row["FirstName"] . '","lastName": "' . $row["LastName"] . '"}';
+                
+                //add current to array of all
+                $allContacts .= $currentContact;
+    
+                //add comma unless last contact
+                if ($contactCount != 1){
+                    $allContacts .= ",";
+                }
+    
+                $contactCount--;
             }
 
-            $contactCount--;
+            returnWithInfo($allContacts);
         }
+
         $conn->close();
-        
-        returnWithInfo($allContacts);
 	}
 	
 	function getRequestInfo()
@@ -56,7 +64,7 @@
 
    	function returnWithError( $err )
    	{
-   		$retValue = '"error":"' . $err . '"';
+   		$retValue = '{"error":"' . $err . '"}';
    		sendResultInfoAsJson( $retValue );
    	}
 
