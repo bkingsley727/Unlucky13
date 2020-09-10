@@ -31,8 +31,8 @@
         }
         
         //setup SQL string
-        $sql = "INSERT INTO `Contacts` (`FirstName`, `LastName`, `Email`, `Phone`,`UserID`) VALUES ('" . $contactFirst . "', '" . $contactLast . "', '" . $contactEmail . "
-                                        ', '" . $contactPhone . "', '" . $userID . "');";
+        $sql = "INSERT INTO `Contacts` (`FirstName`, `LastName`, `Email`, `Phone`,`UserID`) VALUES ('" . $contactFirst . "', '" . $contactLast . "', '" . $contactEmail . 
+                                        "', '" . $contactPhone . "', '" . $userID . "');";
 		
         if( $result = $conn->query($sql) != TRUE )
    		{
