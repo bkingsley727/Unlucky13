@@ -32,7 +32,7 @@
             while ($contactCount > 0){
                 //get next row and format it into json
                 $row = $result->fetch_assoc();
-                $currentContact = '{"ID": ' . $row["ID"] . '"firstName": "' . $row["FirstName"] . '","lastName": "' . $row["LastName"] . '"}';
+                $currentContact = '{"ID": ' . $row["ID"] . ',"firstName": "' . $row["FirstName"] . '","lastName": "' . $row["LastName"] . '"}';
                 
                 //add current to array of all
                 $allContacts .= $currentContact;
