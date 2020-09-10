@@ -18,6 +18,14 @@
 	} 
 	else
 	{
+        //check that userID exists
+        $sql = "SELECT * FROM `Users` WHERE `ID` = " . $userID;
+		$result = $conn->query($sql);
+		if ($result->num_rows < 0)
+		{
+			returnWithError( "No such user Found" );
+        }
+        
         //get ID, and names of all contacts belonging to this user ID
         $sql = "SELECT ID,FirstName,LastName FROM `Contacts` WHERE `UserID` = " . $userID;
         $result = $conn->query($sql);
