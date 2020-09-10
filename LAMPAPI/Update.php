@@ -3,7 +3,7 @@
 	$inData = getRequestInfo();
 	
     //load all the data into variables
-    $contactID = $inData["contactID"]
+    $contactID = $inData["contactID"];
     $currentFirst = $inData["firstName"];
     $currentLast = $inData["lastName"];
     $currentEmail = $inData["email"];
@@ -29,8 +29,7 @@
         }
         
         //SQL string tested in myPHP
-        $sql =  "UPDATE `Contacts` SET `FirstName`= '" . $currentFirst . "', `LastName`= '" . $currentLast . "', `Email`= '" . $currentEmail . 
-                "',`Phone`= '" . $currentPhone . "' WHERE `ID`= " . $contactID;
+        $sql =  "UPDATE `Contacts` SET `FirstName`= '" . $currentFirst . "', `LastName`= '" . $currentLast . "', `Email`= '" . $currentEmail . "', `Phone`= '" . $currentPhone . "' WHERE `ID`= " . $contactID;
         
 		if( $result = $conn->query($sql) != TRUE )
    		{
@@ -56,7 +55,7 @@
 	
 	function returnWithError( $err )
 	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}, "updated": '. false;
+		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}, "updated": '. FALSE;
 		sendResultInfoAsJson( $retValue );
 	}
 	
