@@ -3,7 +3,7 @@
    $inData = getRequestInfo();
 
    // Create connection
-   $conn = new mysqli("localhost", "group13_Kingsley", "dKz6k85rqV", "group13_ContactManager_DB");
+   $conn = new mysqli("localhost", "group13_DB_manage", "Z}^p.B@4d2E&", "group13_ContactManager_DB");
    // Check connection
 	if ($conn->connect_error)
 	{
