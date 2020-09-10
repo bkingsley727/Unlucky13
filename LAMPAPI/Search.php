@@ -13,7 +13,7 @@
 		returnWithError( $conn->connect_error );
 	}
    else {
-      $sql =  "SELECT FirstName, LastName FROM `Contacts` WHERE ( FirstName LIKE '%" . $inData["search"] . "%'
+      $sql =  "SELECT FirstName, LastName, ID FROM `Contacts` WHERE ( FirstName LIKE '%" . $inData["search"] . "%'
                OR LastName LIKE '%" . $inData["search"] . "%' OR Email LIKE '%" . $inData["search"] . "%'
                OR Phone LIKE '%" . $inData["search"] . "%' ) AND UserID LIKE '%" . $inData["userID"] . "%'";
 
@@ -28,7 +28,8 @@
 		while ($searchCount > 0)
 		{
 			$row = $result->fetch_assoc();
-		    $contact = '{"firstName":"' . $row["FirstName"] . '","lastName":"' . $row["LastName"] . '"}';
+		    $contact = '{"firstName":"' . $row["FirstName"] . '","lastName":"' . $row["LastName"] . '","contactID":"' . $row[ID] . '"}';
+
 
 			$searchResults .= $contact;
 
