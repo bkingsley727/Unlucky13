@@ -33,10 +33,10 @@
         $contactCount = $result->num_rows;
 		//if user exists
 		if ($contactCount == 0){
-            //no user, not sure how this is possible
-            returnWithError("No records found");
+            //no contacts
+            returnWithError("No contacts found");
         }else{
-            //yes user
+            //yes contact
             while ($contactCount > 0){
                 //get next row and format it into json
                 $row = $result->fetch_assoc();
