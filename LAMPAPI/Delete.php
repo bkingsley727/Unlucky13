@@ -3,10 +3,11 @@
 
    $contactIDs = array();
    $userID = $inData["userID"];
-
-   for( $i = 0; $i < count($inData["contactID"]); $i++ ){
+   $count = count($inData["contactID"]);
+   for( $i = 0; $i < $count; $i++ ){
       $contactIDs[] = $inData["contactID"][$i];
    }
+   $commaFlag = 0;
 	$conn = new mysqli("localhost", "group13_DB_manage", "Z}^p.B@4d2E&", "group13_ContactManager_DB");
     //check server connection
     if ($conn->connect_error)
@@ -15,16 +16,24 @@
 	}
 	else
 	{
-      for( $i = 0; $i < count($inData["contactID"]); $i++ ){
+      for( $i = 0; $i < $count; $i++ ){
          $contactID = $contactIDs[$i];
-
-         $sql =  "SELECT FirstName, LastName FROM `Contacts` WHERE ( ID LIKE '%" . $contactID . "%') AND UserID LIKE '%" . $userID . "%'";
+         $commaFlag = 0;
+         if(($count > 1) && ($i != ($count - 1)))
+         {
+             $commaFlag = 1;
+         }
+         $sql =  "SELECT FirstName, LastName FROM `Contacts` WHERE ( ID = '" . $contactID . "') AND UserID = '" . $userID . "'";
          $result = $conn->query($sql);
          // database has username
 		    if ($result->num_rows === 0)
 		    {
                 $retValue = '{"message":" Record Not found for chosen contact","contactID":"' . $contactID . '"}';
-     			        $searchResults .= $retValue;
+     			$searchResults .= $retValue;
+     			if($commaFlag)
+     			{
+				$searchResults .= ",";
+     			}
                continue;
 		    }
             else
@@ -34,18 +43,26 @@
                 $lastName = $row["LastName"];
             }
             
-            $sql =  "DELETE FROM `Contacts` WHERE ( ID LIKE '%" . $contactID . "%') AND UserID LIKE '%" . $userID . "%'";
+            $sql =  "DELETE FROM `Contacts` WHERE ( ID = '" . $contactID . "' AND UserID = '" . $userID . "')";
             if( $result = $conn->query($sql) != TRUE )
             {
-               $retValue = '{"message":"Deletion Unsuccessful for Chosen Contact","contactID":"' . $contactID . '"}';
-                   $searchResults .= $retValue;
+                $retValue = '{"message":"Deletion Unsuccessful for Chosen Contact","contactID":"' . $contactID . '"}';
+                $searchResults .= $retValue;
+                if($commaFlag)
+     			{
+				$searchResults .= ",";
+     			}
               continue;
             }
             else
             {
                $retValue = '{"message":"Deletion Successful for Chosen Contact","contactID":"' . $contactID . '",
                               "firstName":"' . $firstName . '", "lastName":"' . $lastName . '"  }';
-                   $searchResults .= $retValue;
+                $searchResults .= $retValue;
+                if($commaFlag)
+     			{
+				$searchResults .= ",";
+     			}
               continue;
             }
          }
