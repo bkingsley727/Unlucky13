@@ -3,7 +3,7 @@
 	$inData = getRequestInfo();
 	
 	$user = $inData["login"];
-	$password = $inData["Password"];
+	$password = $inData["password"];
 
 	
 	$id = 0;
