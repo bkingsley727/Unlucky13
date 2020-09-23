@@ -10,7 +10,7 @@
 		returnWithError( $conn->connect_error );
 	}
    else {
-      $sql =  "SELECT * FROM `Contacts` WHERE (ID LIKE '%" . $inData["contactID"] . "%') AND UserID LIKE '%" . $inData["userID"] . "%'";
+      $sql =  "SELECT * FROM `Contacts` WHERE (ID LIKE '" . $inData["contactID"] . "' AND UserID LIKE '" . $inData["userID"] . "')";
 
 		$result = $conn->query($sql);
       if ($result->num_rows > 0)
