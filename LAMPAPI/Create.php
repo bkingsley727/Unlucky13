@@ -9,6 +9,7 @@
     $contactEmail = $inData["email"];
     $contactPhone = $inData["phone"];
 
+    $contactFlag = 0;
 	
 	$id = 0;
 	$firstName = "";
@@ -30,19 +31,37 @@
 			returnWithError( "No such user Found" );
         }
         
-        //setup SQL string
-        $sql = "INSERT INTO `Contacts` (`FirstName`, `LastName`, `Email`, `Phone`,`UserID`) VALUES ('" . $contactFirst . "', '" . $contactLast .
+        //Check if exact contact already exists
+        $sql =  "SELECT FirstName, LastName, ID FROM `Contacts` WHERE ( FirstName LIKE '" . $contactFirst . "'
+               AND LastName LIKE '" . $contactLast . "' AND Email LIKE '" . $contactEmail . "'
+               AND Phone LIKE '" . $contactPhone . "' AND UserID = '" . $userID . "')";
+        
+        $result = $conn->query($sql);
+		$searchCount = $result->num_rows;
+		
+		if($searchCount > 0)
+		{
+		   returnWithError("Contact already exists"); 
+		   $contactFlag = 1;
+		   
+		}
+		
+        if(!$contactFlag)
+        {
+            //setup SQL string
+             $sql = "INSERT INTO `Contacts` (`FirstName`, `LastName`, `Email`, `Phone`,`UserID`) VALUES ('" . $contactFirst . "', '" . $contactLast .
 							"', '" . $contactEmail . "', '" . $contactPhone . "', '" . $userID . "');";
 		
-        if( $result = $conn->query($sql) != TRUE )
-   		{
-   			returnWithError( $conn->error );
-   		}else{
-            $conn->close();
-            returnWithSuccess($contactFirst, $contactLast);
+            if( $result = $conn->query($sql) != TRUE )
+   		    {
+   			    returnWithError( $conn->error );
+   	    	}
+   		    else
+   	        {
+                returnWithSuccess($contactFirst, $contactLast);
+            }
         }
-        
-
+        $conn->close();
 	}
 	
 	function getRequestInfo()
@@ -64,8 +83,7 @@
 	
 	function returnWithSuccess( $firstName, $lastName)
 	{
-        $retValue = '"contact": {"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}, 
-                    "Created": ' . TRUE;
+        $retValue = '{"contact": {"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}, "Created": ' . TRUE .'}';
 		sendResultInfoAsJson( $retValue );
 	}
 	
