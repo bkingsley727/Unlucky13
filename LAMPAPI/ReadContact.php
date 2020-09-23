@@ -10,7 +10,7 @@
 		returnWithError( $conn->connect_error );
 	}
    else {
-      $sql =  "SELECT * FROM `Contacts` WHERE ID LIKE '%" . $inData["contactID"] . "%'";
+      $sql =  "SELECT * FROM `Contacts` WHERE (ID LIKE '%" . $inData["contactID"] . "%') AND UserID LIKE '%" . $inData["userID"] . "%'";
 
 		$result = $conn->query($sql);
       if ($result->num_rows > 0)
@@ -19,18 +19,19 @@
 			$firstName = $row["FirstName"];
 			$lastName = $row["LastName"];
 			$id = $row["ID"];
-         $email = $row["Email"];
-         $phone = $row["Phone"];
-         $dateCreated = $row["DateCreated"];
+            $email = $row["Email"];
+            $phone = $row["Phone"];
+            $dateCreated = $row["DateCreated"];
 
 			returnWithInfo($firstName, $lastName, $id, $email, $phone, $dateCreated);
 		}
 		else
 		{
-			returnWithError( "how did u get here child what did u click on" );
+			returnWithError( "No contact with that ID listed for user" );
 		}
 		$conn->close();
    }
+
 
    function getRequestInfo()
    {
