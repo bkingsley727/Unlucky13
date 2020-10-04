@@ -21,25 +21,28 @@
 	else
 	{
         //make sure the contact exists
-        $sql = "SELECT * FROM `Contacts` WHERE `ID` = " . $contactID;
+        $sql = "SELECT * FROM `Contacts` WHERE `ID` = " . $contactID . " ";
 		$result = $conn->query($sql);
-		if ($result->num_rows < 0)
+		if (!($result->num_rows > 0))
 		{
 			returnWithError( "No such contact Found" );
         }
+        else
+        {
+            //SQL string tested in myPHP
+            $sql =  "UPDATE `Contacts` SET `FirstName`= '" . $currentFirst . "', `LastName`= '" . $currentLast . "', `Email`= '" . $currentEmail . "', `Phone`= '" . $currentPhone . "' WHERE `ID`= " . $contactID;
         
-        //SQL string tested in myPHP
-        $sql =  "UPDATE `Contacts` SET `FirstName`= '" . $currentFirst . "', `LastName`= '" . $currentLast . "', `Email`= '" . $currentEmail . "', `Phone`= '" . $currentPhone . "' WHERE `ID`= " . $contactID;
+		    if( $result = $conn->query($sql) != TRUE )
+   	    	{
+   			    returnWithError( $conn->error );
+   		    }
+   		    else
+   		    {
+                $conn->close();
+                returnWithSuccess($currentFirst, $currentLast);
+            }
         
-		if( $result = $conn->query($sql) != TRUE )
-   		{
-   			returnWithError( $conn->error );
-   		}else{
-            $conn->close();
-            returnWithSuccess($currentFirst, $currentLast);
         }
-        
-
 	}
 	
 	function getRequestInfo()
@@ -55,14 +58,14 @@
 	
 	function returnWithError( $err )
 	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}, "updated": '. FALSE;
+		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '", "updated": "'. FALSE . '"} ';
 		sendResultInfoAsJson( $retValue );
 	}
 	
 	function returnWithSuccess( $firstName, $lastName)
 	{
-        $retValue = '"contact": {"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}, 
-                    "updated": ' . TRUE;
+        $retValue = '{"contact": {"firstName":"' . $firstName . '",
+        "lastName":"' . $lastName . '"},"error":"", "updated": "' . TRUE . '"}';
 		sendResultInfoAsJson( $retValue );
 	}
 	
